@@ -4,16 +4,17 @@ from cnnClassifier.entity.config_entity import EvaluationConfig
 from cnnClassifier.utils.common import save_json
 
 
-
 class Evaluation:
     def __init__(self, config: EvaluationConfig):
         self.config = config
+        self.model = None
+        self.valid_generator = None
+        self.score = None
 
-    
     def _valid_generator(self):
 
         datagenerator_kwargs = dict(
-            rescale = 1./255,
+            rescale=1./255,
             validation_split=0.30
         )
 
@@ -34,22 +35,27 @@ class Evaluation:
             **dataflow_kwargs
         )
 
-    
     @staticmethod
     def load_model(path: Path) -> tf.keras.Model:
         return tf.keras.models.load_model(path)
-    
 
     def evaluation(self):
-        model = self.load_model(self.config.path_of_model)
+        # Load trained model
+        self.model = self.load_model(self.config.path_of_model)
+
+        # Create validation generator
         self._valid_generator()
-        self.score = model.evaluate(self.valid_generator)
 
-    
+        # Evaluate model
+        self.score = self.model.evaluate(self.valid_generator)
+
     def save_score(self):
-        scores = {"loss": self.score[0], "accuracy": self.score[1]}
-        save_json(path=Path("scores.json"), data=scores)
+        scores = {
+            "loss": self.score[0],
+            "accuracy": self.score[1]
+        }
 
-    
-
-    
+        save_json(
+            path=Path("scores.json"),
+            data=scores
+        )
