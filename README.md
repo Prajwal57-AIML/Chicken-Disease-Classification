@@ -39,7 +39,7 @@ The project follows a structured pipeline approach:
 
 | Category | Tools & Technologies |
 |----------|---------------------|
-| Language | Python 3.8 |
+| Language | Python 3.10 |
 | ML/DL | TensorFlow / Keras |
 | MLOps | DVC, GitHub Actions |
 | Deployment | Docker |
